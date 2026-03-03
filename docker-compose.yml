@@ -1,0 +1,35 @@
+services:
+  nginx:
+    # 使用 Docker Hub 镜像
+    image: titantalk/nginx:latest
+    # 本地构建（已注释）
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # Nginx 配置文件
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      
+      # SSL 证书存储（持久化）
+      - ./data/letsencrypt:/etc/letsencrypt
+      
+      # Webroot 用于 Let's Encrypt 验证
+      - ./data/html:/var/www/html
+      
+      # 日志目录
+      - ./data/logs/nginx:/var/log/nginx
+      - ./data/logs/certbot:/var/log/certbot
+    environment:
+      - TZ=Asia/Shanghai
+    networks:
+      - default
+
+networks:
+  default:
+    driver: bridge

@@ -1,0 +1,6 @@
+#!/bin/bash
+# Wrapper script for cert-manager command
+# Usage: ./cert-manager help
+
+export MSYS_NO_PATHCONV=1
+docker exec nginx /usr/local/bin/cert-manager "$@"

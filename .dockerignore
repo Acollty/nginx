@@ -1,0 +1,24 @@
+# 忽略不需要打包到镜像中的文件
+
+# 数据目录
+data/
+
+# Git
+.git/
+.gitignore
+
+# 文档
+README.md
+*.md
+
+# Docker
+docker-compose.yml
+.dockerignore
+
+# 日志
+*.log
+
+# 临时文件
+*.tmp
+*.swp
+*~
