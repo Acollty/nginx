@@ -14,7 +14,7 @@
 ## 目录结构
 
 ```
-wk-nginx/
+nginx/
 ├── Dockerfile                          # Docker 镜像构建文件
 ├── docker-compose.yml                  # Docker Compose 配置
 ├── scripts/                            # 脚本目录
@@ -38,7 +38,7 @@ wk-nginx/
 ### 1. 构建镜像
 
 ```bash
-cd wk-nginx
+cd nginx
 docker build -t nginx:latest .
 ```
 
@@ -74,17 +74,17 @@ cp nginx/conf.d/example.com.conf.template nginx/conf.d/yourdomain.com.conf
 重载 nginx 配置：
 
 ```bash
-docker exec wk-nginx nginx -s reload
+docker exec nginx nginx -s reload
 ```
 
 ### 4. 申请 SSL 证书
 
 ```bash
 # 方法1: 使用证书管理工具
-docker exec wk-nginx cert-manager create yourdomain.com admin@yourdomain.com
+docker exec nginx cert-manager create yourdomain.com admin@yourdomain.com
 
 # 方法2: 直接使用 certbot
-docker exec wk-nginx certbot certonly \
+docker exec nginx certbot certonly \
   --webroot \
   --webroot-path=/var/www/html \
   --email admin@yourdomain.com \
@@ -98,7 +98,7 @@ docker exec wk-nginx certbot certonly \
 编辑 `nginx/conf.d/yourdomain.com.conf`，取消 HTTPS 服务器配置的注释，然后重载：
 
 ```bash
-docker exec wk-nginx nginx -s reload
+docker exec nginx nginx -s reload
 ```
 
 ## 证书管理
