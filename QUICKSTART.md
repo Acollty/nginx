@@ -3,7 +3,7 @@
 ## 1. 构建镜像
 
 ```bash
-cd wk-nginx
+cd nginx
 docker build -t nginx:latest .
 ```
 
@@ -169,7 +169,7 @@ docker logs nginx                       # 查看日志
 
 ```bash
 # 1. 构建和启动
-cd wk-nginx
+cd nginx
 make init
 make build
 make up
