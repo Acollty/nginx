@@ -70,7 +70,7 @@ curl http://localhost/
 
 ```bash
 # 使用证书管理工具（推荐）
-docker exec nginx cert-manager create yourdomain.com admin@yourdomain.com
+docker exec nginx cert create yourdomain.com admin@yourdomain.com
 
 # 或直接使用 certbot
 docker exec nginx certbot certonly \
@@ -116,7 +116,7 @@ make nginx-reload
 curl https://yourdomain.com -k
 
 # 查看证书信息
-docker exec nginx cert-manager info yourdomain.com
+docker exec nginx cert info yourdomain.com
 ```
 
 ## 9. 监控自动续期
@@ -136,7 +136,7 @@ make cert-logs
 ### 手动测试续期
 
 ```bash
-docker exec nginx cert-manager test
+docker exec nginx cert test
 ```
 
 ## 常用命令
@@ -157,7 +157,7 @@ make cert-test      # 测试续期
 make cert-logs      # 查看续期日志
 
 # 直接使用 Docker
-docker exec nginx cert-manager help     # 证书管理帮助
+docker exec nginx cert help     # 证书管理帮助
 docker exec nginx nginx -s reload       # 重载 Nginx
 docker exec nginx nginx -t              # 测试配置
 docker logs nginx                       # 查看日志
@@ -182,7 +182,7 @@ cp nginx/conf.d/example.com.conf.template nginx/conf.d/example.com.conf
 make nginx-reload
 
 # 4. 申请证书
-docker exec nginx cert-manager create example.com admin@example.com
+docker exec nginx cert create example.com admin@example.com
 
 # 5. 启用 HTTPS
 # 编辑 nginx/conf.d/example.com.conf，启用 HTTPS 配置
@@ -190,7 +190,7 @@ make nginx-reload
 
 # 6. 验证
 curl https://example.com
-docker exec nginx cert-manager info example.com
+docker exec nginx cert info example.com
 
 # 7. 查看自动续期日志
 make cert-logs

@@ -32,10 +32,10 @@ elif [ "$1" = "renew" ]; then
     # 执行续期
     echo "Running certificate renewal..."
     /scripts/renew-certs.sh
-elif [ "$1" = "cert-manager" ]; then
+elif [ "$1" = "cert" ]; then
     # 执行证书管理
     shift
-    /scripts/cert-manager.sh "$@"
+    /scripts/cert.sh "$@"
 else
     # 执行自定义命令
     exec "$@"

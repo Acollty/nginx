@@ -20,7 +20,7 @@ nginx/
 ├── scripts/                            # 脚本目录
 │   ├── entrypoint.sh                  # 容器入口脚本
 │   ├── renew-certs.sh                 # 自动续期脚本
-│   └── cert-manager.sh                # 证书管理脚本
+│   └── cert.sh                        # 证书管理脚本
 ├── nginx/                              # Nginx 配置目录
 │   ├── nginx.conf                     # Nginx 主配置
 │   └── conf.d/                        # 虚拟主机配置
@@ -81,7 +81,7 @@ docker exec nginx nginx -s reload
 
 ```bash
 # 方法1: 使用证书管理工具
-docker exec nginx cert-manager create yourdomain.com admin@yourdomain.com
+docker exec nginx cert create yourdomain.com admin@yourdomain.com
 
 # 方法2: 直接使用 certbot
 docker exec nginx certbot certonly \
@@ -107,28 +107,28 @@ docker exec nginx nginx -s reload
 
 ```bash
 # 查看帮助
-docker exec nginx cert-manager help
+docker exec nginx cert help
 
 # 创建新证书
-docker exec nginx cert-manager create example.com admin@example.com
+docker exec nginx cert create example.com admin@example.com
 
 # 续期所有证书
-docker exec nginx cert-manager renew
+docker exec nginx cert renew
 
 # 强制续期所有证书
-docker exec nginx cert-manager renew-force
+docker exec nginx cert renew-force
 
 # 列出所有证书
-docker exec nginx cert-manager list
+docker exec nginx cert list
 
 # 查看证书信息
-docker exec nginx cert-manager info example.com
+docker exec nginx cert info example.com
 
 # 删除证书
-docker exec nginx cert-manager delete example.com
+docker exec nginx cert delete example.com
 
 # 测试续期（dry-run）
-docker exec nginx cert-manager test
+docker exec nginx cert test
 ```
 
 ### 直接使用 Certbot
@@ -174,7 +174,7 @@ docker exec nginx tail -50 /var/log/certbot/renew.log
 docker exec nginx /scripts/renew-certs.sh
 
 # 或使用证书管理工具
-docker exec nginx cert-manager renew
+docker exec nginx cert renew
 ```
 
 ### 修改续期时间
@@ -263,8 +263,8 @@ docker exec nginx tail -f /var/log/certbot/renew.log
 ## 最佳实践
 
 1. **定期备份证书**：备份 `data/letsencrypt` 目录
-2. **监控证书到期时间**：使用 `cert-manager info` 查看
-3. **测试续期**：定期运行 `cert-manager test` 确保续期功能正常
+2. **监控证书到期时间**：使用 `cert info` 查看
+3. **测试续期**：定期运行 `cert test` 确保续期功能正常
 4. **使用只读挂载**：配置文件使用只读挂载（`:ro`）提高安全性
 5. **日志轮转**：定期清理或轮转日志文件
 

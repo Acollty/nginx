@@ -20,10 +20,10 @@ Commands:
   test                        - Test certificate renewal (dry-run)
 
 Examples:
-  cert-manager create example.com admin@example.com
-  cert-manager renew
-  cert-manager list
-  cert-manager info example.com
+  cert create example.com admin@example.com
+  cert renew
+  cert list
+  cert info example.com
 
 EOF
 }
@@ -35,7 +35,7 @@ create_cert() {
     
     if [ -z "$domain" ] || [ -z "$email" ]; then
         echo "Error: Domain and email are required"
-        echo "Usage: cert-manager create <domain> <email>"
+        echo "Usage: cert create <domain> <email>"
         exit 1
     fi
     
@@ -100,7 +100,7 @@ delete_cert() {
     
     if [ -z "$domain" ]; then
         echo "Error: Domain is required"
-        echo "Usage: cert-manager delete <domain>"
+        echo "Usage: cert delete <domain>"
         exit 1
     fi
     
@@ -114,7 +114,7 @@ show_cert_info() {
     
     if [ -z "$domain" ]; then
         echo "Error: Domain is required"
-        echo "Usage: cert-manager info <domain>"
+        echo "Usage: cert info <domain>"
         exit 1
     fi
     

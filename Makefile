@@ -185,15 +185,15 @@ nginx-test:
 # ============================================================================
 
 cert-list:
-	@docker exec $(CONTAINER_NAME) cert-manager list
+	@docker exec $(CONTAINER_NAME) cert list
 
 cert-renew:
 	@echo "Renewing certificates..."
-	@docker exec $(CONTAINER_NAME) cert-manager renew
+	@docker exec $(CONTAINER_NAME) cert renew
 
 cert-test:
 	@echo "Testing certificate renewal..."
-	@docker exec $(CONTAINER_NAME) cert-manager test
+	@docker exec $(CONTAINER_NAME) cert test
 
 cert-logs:
 	@docker exec $(CONTAINER_NAME) tail -f /var/log/certbot/renew.log

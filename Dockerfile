@@ -31,15 +31,15 @@ RUN mkdir -p /var/log/nginx \
 # 复制脚本文件到 /scripts
 COPY scripts/renew-certs.sh /scripts/renew-certs.sh
 COPY scripts/entrypoint.sh /scripts/entrypoint.sh
-COPY scripts/cert-manager.sh /scripts/cert-manager.sh
+COPY scripts/cert.sh /scripts/cert.sh
 
 # 设置脚本执行权限
 RUN chmod +x /scripts/*.sh
 
 # 在 /usr/local/bin 创建包装脚本（不是软链接或复制）
-RUN echo '#!/bin/sh' > /usr/local/bin/cert-manager && \
-    echo 'exec /scripts/cert-manager.sh "$@"' >> /usr/local/bin/cert-manager && \
-    chmod +x /usr/local/bin/cert-manager && \
+RUN echo '#!/bin/sh' > /usr/local/bin/cert && \
+    echo 'exec /scripts/cert.sh "$@"' >> /usr/local/bin/cert && \
+    chmod +x /usr/local/bin/cert && \
     echo '#!/bin/sh' > /usr/local/bin/renew-certs && \
     echo 'exec /scripts/renew-certs.sh "$@"' >> /usr/local/bin/renew-certs && \
     chmod +x /usr/local/bin/renew-certs
