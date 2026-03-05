@@ -6,7 +6,7 @@
 #   make up       - Start containers
 #   make help     - Show this help message
 
-.PHONY: help build deploy up down restart logs shell nginx-reload nginx-test cert-list cert-renew cert-test cert-logs clean init info login
+.PHONY: help build deploy deploy-aliyun up down restart logs shell nginx-reload nginx-test cert-list cert-renew cert-test cert-logs clean init info login
 
 # ============================================================================
 # Configuration
@@ -24,6 +24,11 @@ IMAGE_NAME ?= nginx
 FULL_IMAGE := $(REGISTRY)/$(NAMESPACE)/$(IMAGE_NAME)
 CONTAINER_NAME := nginx
 
+# Aliyun registry configuration
+ALIYUN_REGISTRY ?= registry.cn-shenzhen.aliyuncs.com
+ALIYUN_NAMESPACE ?= acoll
+ALIYUN_REPO_API := $(ALIYUN_REGISTRY)/$(ALIYUN_NAMESPACE)/$(IMAGE_NAME)
+
 # Build configuration
 DOCKER_BUILDKIT ?= 1
 
@@ -38,7 +43,8 @@ help:
 	@echo ""
 	@echo "Docker Commands:"
 	@echo "  make build            Build Docker image locally"
-	@echo "  make deploy           Build and push Docker image to registry"
+	@echo "  make deploy           Build and push Docker image to Docker Hub"
+	@echo "  make deploy-aliyun    Build and push Docker image to Aliyun registry"
 	@echo "  make login            Login to Docker registry"
 	@echo "  make clean            Clean local Docker images"
 	@echo "  make info             Show build configuration"
@@ -145,6 +151,66 @@ deploy:
 login:
 	@echo "Logging in to $(REGISTRY)..."
 	@docker login $(REGISTRY)
+
+# ============================================================================
+# Deploy Aliyun: Build and push Docker image to Aliyun registry
+# ============================================================================
+
+deploy-aliyun:
+	@echo "=========================================="
+	@echo "Building and Pushing to Aliyun Registry"
+	@echo "=========================================="
+	@echo "Version:    $(VERSION)"
+	@echo "Commit:     $(COMMIT)"
+	@echo "Build Time: $(BUILD_TIME)"
+	@echo ""
+	@echo "[1/3] Building image..."
+	@docker build \
+		--build-arg VERSION=$(VERSION) \
+		--build-arg COMMIT=$(COMMIT) \
+		--build-arg BUILD_TIME=$(BUILD_TIME) \
+		-t $(IMAGE_NAME):$(VERSION) \
+		-t $(ALIYUN_REPO_API):$(VERSION) \
+		-t $(ALIYUN_REPO_API):latest \
+		.
+	@echo ""
+	@echo "[2/3] Pushing version tag (with retry)..."
+	@for i in 1 2 3; do \
+		echo "Attempt $$i of 3..."; \
+		if docker push $(ALIYUN_REPO_API):$(VERSION); then \
+			break; \
+		else \
+			if [ $$i -eq 3 ]; then \
+				echo "Failed to push version tag after 3 attempts"; \
+				exit 1; \
+			fi; \
+			echo "Push failed, retrying in 5 seconds..."; \
+			sleep 5; \
+		fi; \
+	done
+	@echo ""
+	@echo "[3/3] Pushing latest tag (with retry)..."
+	@for i in 1 2 3; do \
+		echo "Attempt $$i of 3..."; \
+		if docker push $(ALIYUN_REPO_API):latest; then \
+			break; \
+		else \
+			if [ $$i -eq 3 ]; then \
+				echo "Failed to push latest tag after 3 attempts"; \
+				exit 1; \
+			fi; \
+			echo "Push failed, retrying in 5 seconds..."; \
+			sleep 5; \
+		fi; \
+	done
+	@echo ""
+	@echo "=========================================="
+	@echo "Deploy to Aliyun Complete!"
+	@echo "=========================================="
+	@echo "Images pushed:"
+	@echo "  $(ALIYUN_REPO_API):$(VERSION)"
+	@echo "  $(ALIYUN_REPO_API):latest"
+	@echo ""
 
 # ============================================================================
 # Container Management
