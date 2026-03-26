@@ -19,7 +19,7 @@ BUILD_TIME ?= $(shell date -u +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || powershell -C
 
 # Docker image configuration
 REGISTRY ?= docker.io
-NAMESPACE ?= titantalk
+NAMESPACE ?= acollty
 IMAGE_NAME ?= nginx
 FULL_IMAGE := $(REGISTRY)/$(NAMESPACE)/$(IMAGE_NAME)
 CONTAINER_NAME := nginx
