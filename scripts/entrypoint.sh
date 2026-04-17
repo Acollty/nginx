@@ -1,3 +1,14 @@
+openclaw@VM-0-9-ubuntu:~/deploy/apps/nginx/conf.d$ docker compose exec nginx curl -s -o /dev/null -w "%{http_code}" http://localhost/.well-known/acme-challenge/test
+000openclaw@VM-0-9-ubuntu:~/deploy/apps/nginx/conf.curl -v http://ai.playbors.com/.well-known/acme-challenge/testest
+* Host ai.playbors.com:80 was resolved.
+* IPv6: (none)
+* IPv4: 43.156.69.120
+*   Trying 43.156.69.120:80...
+* connect to 43.156.69.120 port 80 from 10.3.0.9 port 39036 failed: Connection refused
+* Failed to connect to ai.playbors.com port 80 after 70 ms: Couldn't connect to server
+* Closing connection
+curl: (7) Failed to connect to ai.playbors.com port 80 after 70 ms: Couldn't connect to server
+openclaw@VM-0-9-ubuntu:~/deploy/apps/nginx/conf.d$ 
 #!/bin/bash
 
 # Nginx with Certbot - 入口脚本
@@ -42,6 +53,22 @@ server {
 }
 NGINX_EOF
 fi
+
+# 检查证书文件是否存在，不存在则禁用对应配置
+echo "Checking SSL certificates..."
+for conf_file in "$NGINX_CONF_DIR"/*.conf; do
+    [ -f "$conf_file" ] || continue
+    [ "$(basename "$conf_file")" = "default.conf" ] && continue
+    
+    # 提取证书路径
+    cert_path=$(grep -oP 'ssl_certificate\s+\K[^;]+' "$conf_file" | head -1 | tr -d ' ')
+    
+    if [ -n "$cert_path" ] && [ ! -f "$cert_path" ]; then
+        echo "WARNING: Certificate not found: $cert_path"
+        echo "Disabling config: $conf_file"
+        mv "$conf_file" "$conf_file.disabled"
+    fi
+done
 
 # 检查 nginx 配置
 echo "Testing nginx configuration..."

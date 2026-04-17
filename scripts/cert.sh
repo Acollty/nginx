@@ -128,6 +128,12 @@ create_cert() {
     echo "Generating nginx config for $domain..."
     generate_nginx_conf "$domain" "$proxy_pass"
 
+    # 如果之前有被禁用的同名配置，删除它
+    if [ -f "$NGINX_CONF_DIR/${domain}.conf.disabled" ]; then
+        echo "Removing old disabled config..."
+        rm -f "$NGINX_CONF_DIR/${domain}.conf.disabled"
+    fi
+
     echo "Testing nginx configuration..."
     nginx -t
 
