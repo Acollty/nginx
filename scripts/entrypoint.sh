@@ -49,8 +49,8 @@ for conf_file in "$NGINX_CONF_DIR"/*.conf; do
     [ -f "$conf_file" ] || continue
     [ "$(basename "$conf_file")" = "default.conf" ] && continue
     
-    # 提取证书路径
-    cert_path=$(grep -oP 'ssl_certificate\s+\K[^;]+' "$conf_file" | head -1 | tr -d ' ')
+    # 提取证书路径（使用 sed 替代 grep -P）
+    cert_path=$(sed -n 's/^[[:space:]]*ssl_certificate[[:space:]]\+\([^;]\+\);.*/\1/p' "$conf_file" | head -1 | tr -d ' ')
     
     if [ -n "$cert_path" ] && [ ! -f "$cert_path" ]; then
         echo "WARNING: Certificate not found: $cert_path"
